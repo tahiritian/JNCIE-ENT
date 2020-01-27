@@ -1,0 +1,130 @@
+set system login class limited permissions view
+set system login class limited permissions view-configuration
+set system login class noc permissions all
+set system login class noc deny-commands "(clear)|(configure)|(edit)|(start shell)"
+set system login user lab uid 2000
+set system login user lab class super-user
+set system login user lab authentication encrypted-password workbook
+set system login user remote uid 2001
+set system login user remote class limited
+set system login user remote authentication encrypted-password workbook
+set system login user support uid 2002
+set system login user support class noc
+set system login user support authentication encrypted-password workbook
+set system root-authentication encrypted-password "$6$/vLk0w8u$afC6ILjmuGiuh3E3lhQqxG2.UStiKb/joi41Z6hHnaaGf9dTEvEAoIYRF.8jDyIevN2BStVJAKyiEAK6kxu2.1"
+set system services ssh root-login allow
+set system services telnet
+set system services netconf ssh
+set system services web-management http interface em0.0
+set system services web-management https system-generated-certificate
+set system services web-management https interface em0.0
+set system host-name D5-Jupiter         
+set system backup-router 10.10.1.254
+set system time-zone Europe/Amsterdam
+set system authentication-order radius
+set system authentication-order password
+set system name-server 10.10.10.1
+set system radius-server 10.10.10.1 secret "$9$4BZHmpu1ESe69tORSMW4aZjkP"
+set system radius-server 10.10.10.1 timeout 2
+set system radius-server 10.10.10.1 retry 1
+set system syslog archive size 100000
+set system syslog archive files 3
+set system syslog user * any emergency
+set system syslog host 10.10.10.1 any warning
+set system syslog host 10.10.10.1 log-prefix JNCIE-ENT
+set system syslog host 10.10.10.1 explicit-priority
+set system syslog file messages any info
+set system syslog file messages authorization info
+set system syslog file interactive-commands interactive-commands info
+set system syslog file authorization-file authorization info
+set system extensions providers juniper license-type juniper deployment-scope commercial
+set system extensions providers chef license-type juniper deployment-scope commercial
+set system ntp boot-server 10.10.10.1   
+set system ntp authentication-key 1 type md5
+set system ntp authentication-key 1 value "$9$9MWbpIc-dsgaU8XNb2aiH9ApBRS"
+set system ntp server 10.10.10.1 key 1
+set interfaces em0 unit 0 family inet address 10.10.1.11/24
+set interfaces em1 unit 0 family inet address 169.254.0.2/24
+set interfaces lo0 unit 0 family inet filter input protect-re-inet
+set snmp v3 usm local-engine user S1 authentication-md5 authentication-key "$9$3SIS90IXxdw2aKMLNb2GU369pOR"
+set snmp v3 vacm security-to-group security-model usm security-name S1 group global
+set snmp v3 vacm access group global default-context-prefix security-model usm security-level authentication read-view global-info
+set snmp v3 target-address S1 address 10.10.10.1
+set snmp v3 target-address S1 tag-list trap-receiver
+set snmp v3 target-address S1 target-parameters S1-parameters
+set snmp v3 target-parameters S1-parameters parameters message-processing-model v3
+set snmp v3 target-parameters S1-parameters parameters security-model usm
+set snmp v3 target-parameters S1-parameters parameters security-level authentication
+set snmp v3 target-parameters S1-parameters parameters security-name S1
+set snmp v3 target-parameters S1-parameters notify-filter specific-traps
+set snmp v3 notify NMS type trap        
+set snmp v3 notify NMS tag trap-receiver
+set snmp v3 notify-filter specific-traps oid snmpTraps include
+set snmp v3 notify-filter specific-traps oid jnxTraps include
+set snmp view global-info oid .1 include
+set forwarding-options storm-control-profiles default all
+set firewall family inet filter protect-re-inet term ah from protocol ah
+set firewall family inet filter protect-re-inet term ah then accept
+set firewall family inet filter protect-re-inet term gre from protocol gre
+set firewall family inet filter protect-re-inet term gre then accept
+set firewall family inet filter protect-re-inet term bfd from protocol udp
+set firewall family inet filter protect-re-inet term bfd from destination-port 3784
+set firewall family inet filter protect-re-inet term bfd then accept
+set firewall family inet filter protect-re-inet term vrrp from protocol vrrp
+set firewall family inet filter protect-re-inet term vrrp then accept
+set firewall family inet filter protect-re-inet term ospf from protocol ospf
+set firewall family inet filter protect-re-inet term ospf then accept
+set firewall family inet filter protect-re-inet term bgp-1 from protocol tcp
+set firewall family inet filter protect-re-inet term bgp-1 from source-port bgp
+set firewall family inet filter protect-re-inet term bgp-1 then accept
+set firewall family inet filter protect-re-inet term bgp-2 from protocol tcp
+set firewall family inet filter protect-re-inet term bgp-2 from destination-port bgp
+set firewall family inet filter protect-re-inet term bgp-2 then accept
+set firewall family inet filter protect-re-inet term igmp from protocol igmp
+set firewall family inet filter protect-re-inet term igmp then accept
+set firewall family inet filter protect-re-inet term pim from protocol pim
+set firewall family inet filter protect-re-inet term pim then accept
+set firewall family inet filter protect-re-inet term ntp from source-address 10.10.10.0/24
+set firewall family inet filter protect-re-inet term ntp from protocol udp
+set firewall family inet filter protect-re-inet term ntp from source-port ntp
+set firewall family inet filter protect-re-inet term radius from source-address 10.10.10.0/24
+set firewall family inet filter protect-re-inet term radius from protocol tcp
+set firewall family inet filter protect-re-inet term radius from protocol udp
+set firewall family inet filter protect-re-inet term radius from source-port radius
+set firewall family inet filter protect-re-inet term radius then accept
+set firewall family inet filter protect-re-inet term dns from source-address 10.10.10.0/24
+set firewall family inet filter protect-re-inet term dns from protocol udp
+set firewall family inet filter protect-re-inet term dns from protocol tcp
+set firewall family inet filter protect-re-inet term dns from source-port domain
+set firewall family inet filter protect-re-inet term dns then accept
+set firewall family inet filter protect-re-inet term snmp from source-address 10.10.10.0/24
+set firewall family inet filter protect-re-inet term snmp from protocol udp
+set firewall family inet filter protect-re-inet term snmp from destination-port snmp
+set firewall family inet filter protect-re-inet term snmp then accept
+set firewall family inet filter protect-re-inet term telnet from source-address 10.10.10.0/24
+set firewall family inet filter protect-re-inet term telnet from protocol tcp
+set firewall family inet filter protect-re-inet term telnet from destination-port telnet
+set firewall family inet filter protect-re-inet term telnet then accept
+set firewall family inet filter protect-re-inet term http from source-address 10.10.10.0/24
+set firewall family inet filter protect-re-inet term http from protocol tcp
+set firewall family inet filter protect-re-inet term http from destination-port http
+set firewall family inet filter protect-re-inet term http then accept
+set firewall family inet filter protect-re-inet term https from source-address 10.10.10.0/24
+set firewall family inet filter protect-re-inet term https from protocol tcp
+set firewall family inet filter protect-re-inet term https from destination-port https
+set firewall family inet filter protect-re-inet term https then accept
+set firewall family inet filter protect-re-inet term icmp from protocol icmp
+set firewall family inet filter protect-re-inet term icmp then policer re-policier
+set firewall family inet filter protect-re-inet term icmp then accept
+set firewall family inet filter protect-re-inet term traceroute from protocol udp
+set firewall family inet filter protect-re-inet term traceroute then policer re-policier
+set firewall family inet filter protect-re-inet term traceroute then accept
+set firewall family inet filter protect-re-inet term explicit_discard then count dropped
+set firewall family inet filter protect-re-inet term explicit_discard then discard
+set firewall policer re-policier if-exceeding bandwidth-limit 100k
+set firewall policer re-policier if-exceeding burst-size-limit 25k
+set firewall policer re-policier then discard
+set routing-options static route 10.10.10.0/24 next-hop 10.10.1.254
+set protocols lldp interface all
+set protocols igmp-snooping vlan default
+set vlans default vlan-id 1
